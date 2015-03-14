@@ -1,44 +1,18 @@
 (function() {
   'use strict';
 
-  angular.module('myApp.beers', ['ngRoute'])
-
-  .config(['$routeProvider', function($routeProvider) {
-    $routeProvider.when('/beers', {
-      templateUrl: 'js/modules/beers/views/beers.html',
-      controller: 'BeersCtrl'
-    })
-    .when('/beers/create', {
-      templateUrl: 'js/modules/beers/views/create.html',
-      controller: 'BeersCreateCtrl'
-    })
-    .when('/beers/:id', {
-      templateUrl: 'js/modules/beers/views/get.html',
-      controller: 'BeersGetCtrl'
-    })
-    .when('/beers/:id/edit', {
-      templateUrl: 'js/modules/beers/views/update.html',
-      controller: 'BeersEditCtrl'
-    });
-  }])
-
+  angular.module('myApp.beers.Controllers', [])
   .controller('BeersCtrl', BeersCtrl)
   .controller('BeersGetCtrl', BeersGetCtrl)
   .controller('BeersCreateCtrl', BeersCreateCtrl)
   .controller('BeersEditCtrl', BeersEditCtrl);
 
-  function BeersCreateCtrl($scope, $http) {
+  function BeersCreateCtrl($scope, $http, BeerService) {
 
     $scope.create = function(cerveja) {
-      var url = 'http://localhost:3000/api/beers'
-        , method= 'POST'
-        ;
 
-      $http({
-        url: url
-      , method: method
-      , data: cerveja
-      })
+      BeerService
+      .create(cerveja)
       .success(function(data) {
         console.log('Sucesso: ', data);
         $scope.msg = 'Cerveja ' + cerveja.name + ' cadastrada com sucesso!';
@@ -47,10 +21,11 @@
         console.log('Erro: ', data);
         $scope.msg = 'Cerveja ' + cerveja.name + ' não pode ser cadastrada!';
       });
+
     }
   }
 
-  function BeersCtrl($scope, $http) {
+  function BeersCtrl($scope, $http, BeerService) {
     $scope.msg = 'Listagem das cervejas';
     $scope.reverse = false;
     $scope.predicate = 'name';
@@ -64,10 +39,8 @@
       , method = 'GET'
       ;
 
-    $http({
-      url: url
-    , method: method
-    })
+    BeerService
+    .find()
     .success(function(data) {
       $scope.cervejas = data;
       console.log('Sucesso', data);
@@ -82,10 +55,8 @@
           , method = 'DELETE'
           ;
 
-        $http({
-          url: _url,
-          method: method
-        })
+        BeerService
+        .remove(cerveja)
         .success(function(data) {
           console.log('Sucesso: ', data);
           var index = $scope.cervejas.indexOf(cerveja);
@@ -98,17 +69,15 @@
     }
   }
 
-  function BeersGetCtrl($scope, $http, $routeParams) {
+  function BeersGetCtrl($scope, $http, $routeParams, BeerService) {
 
     var id = $routeParams.id
       , url = 'http://localhost:3000/api/beers/'+id
       , method = 'GET'
       ;
 
-    $http({
-      url: url
-    , method: method
-    })
+    BeerService
+    .findOne(id)
     .success(function(data) {
       $scope.cerveja = data;
       console.log('Sucesso', data);
@@ -118,17 +87,15 @@
     });
   }
 
-  function BeersEditCtrl($scope, $http, $routeParams) {
+  function BeersEditCtrl($scope, $http, $routeParams, BeerService) {
 
     var id = $routeParams.id
       , url = 'http://localhost:3000/api/beers/'+id
       , method = 'GET'
       ;
 
-    $http({
-      url: url
-    , method: method
-    })
+    BeerService
+    .findOne(id)
     .success(function(data) {
       $scope.cerveja = data;
       console.log('Sucesso', data);
@@ -140,11 +107,8 @@
     $scope.update = function(cerveja) {
       var method = 'PUT';
 
-      $http({
-        url: url
-      , method: method
-      , data: cerveja
-      })
+      BeerService
+      .update(cerveja)
       .success(function(data) {
         console.log('Sucesso: ', data);
         $scope.msg = 'Cerveja ' + cerveja.name + ' alterada com sucesso!';
@@ -156,9 +120,9 @@
     }
   }
 
-  BeersCtrl.$inject = ['$scope', '$http'];
-  BeersCreateCtrl.$inject = ['$scope', '$http']
-  BeersGetCtrl.$inject = ['$scope', '$http', '$routeParams']
-  BeersEditCtrl.$inject = ['$scope', '$http', '$routeParams'];
+  BeersCtrl.$inject = ['$scope', '$http', 'BeerService'];
+  BeersCreateCtrl.$inject = ['$scope', '$http', 'BeerService']
+  BeersGetCtrl.$inject = ['$scope', '$http', '$routeParams', 'BeerService']
+  BeersEditCtrl.$inject = ['$scope', '$http', '$routeParams', 'BeerService'];
 
 })();
