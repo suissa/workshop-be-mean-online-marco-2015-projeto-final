@@ -1,4 +1,5 @@
-var express = require('express'),
+var db = require('./config/db'),
+  express = require('express'),
   bodyParser = require('body-parser'),
   methodOverride = require('method-override'),
   errorHandler = require('errorhandler'),
@@ -10,6 +11,9 @@ var express = require('express'),
   path = require('path');
 
 var app = module.exports = express();
+
+var api = {};
+api.beers = require('./modules/beers/routes/api');
 
 /**
  * Configuration
@@ -49,7 +53,8 @@ app.use('/', routes);
 app.use('/partials', partials);
 
 // JSON API
-app.use('/api', api);
+// app.use('/api', api);
+app.use('/api/beers', api.beers);
 
 // redirect all others to the index (HTML5 history)
 app.get('*', function(req, res, next) {

@@ -5,19 +5,19 @@
 
   .config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/beers', {
-      templateUrl: 'modules/beers/views/beers.html',
+      templateUrl: 'js/modules/beers/views/beers.html',
       controller: 'BeersCtrl'
     })
     .when('/beers/create', {
-      templateUrl: 'modules/beers/views/create.html',
+      templateUrl: 'js/modules/beers/views/create.html',
       controller: 'BeersCreateCtrl'
     })
     .when('/beers/:id', {
-      templateUrl: 'modules/beers/views/get.html',
+      templateUrl: 'js/modules/beers/views/get.html',
       controller: 'BeersGetCtrl'
     })
     .when('/beers/:id/edit', {
-      templateUrl: 'modules/beers/views/update.html',
+      templateUrl: 'js/modules/beers/views/update.html',
       controller: 'BeersEditCtrl'
     });
   }])
